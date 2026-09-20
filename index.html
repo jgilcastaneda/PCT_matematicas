@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tres números, muchas posibilidades · Recurso docente</title>
+<style>
+:root{--navy:#17384b;--blue:#315a74;--blue2:#eaf1f5;--green:#2f6b57;--green2:#edf5f1;--gold:#a46a00;--gold2:#fff8dc;--ink:#24323b;--muted:#667781;--line:#dce5e9;--paper:#f4f7f8}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.5}
+header{background:linear-gradient(130deg,var(--navy),var(--blue));color:white;padding:26px 22px}.wrap{max-width:1080px;margin:auto}h1{font-size:clamp(28px,4vw,44px);margin:0}header p{margin:5px 0 0;opacity:.88}
+nav{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--line);box-shadow:0 5px 18px #17384b12}.navin{max-width:1080px;margin:auto;padding:10px 18px;display:flex;gap:8px;overflow:auto}
+button{font:inherit}.mainbtn,.partbtn{border:0;border-radius:999px;padding:9px 15px;font-weight:800;cursor:pointer;white-space:nowrap}.mainbtn{background:#e5edf1;color:var(--navy)}.mainbtn.active{background:var(--blue);color:white}
+main{max-width:1080px;margin:auto;padding:20px}.page,.part{display:none}.page.active,.part.active{display:block}.parts{display:flex;gap:7px;flex-wrap:wrap;margin:0 0 17px}.partbtn{background:white;border:1px solid #cbd8de;color:var(--blue)}.partbtn.active{background:var(--navy);border-color:var(--navy);color:white}
+.card{background:white;border:1px solid #e0e7ea;border-radius:18px;padding:22px;margin-bottom:16px;box-shadow:0 12px 30px #17384b10}.intro{border-top:6px solid var(--blue)}.reto{border-top:6px solid var(--green)}.rules{background:var(--blue2);border-left:5px solid var(--blue)}h2{margin:0 0 7px;color:var(--blue);font-size:30px}h3{margin:0 0 10px;color:var(--navy);font-size:23px}.label{display:inline-block;font-size:12px;font-weight:900;letter-spacing:.08em;border-radius:999px;padding:5px 9px;margin-bottom:10px;background:var(--green2);color:var(--green)}.math{text-align:center;font-size:29px;font-weight:850;letter-spacing:5px;margin:17px 0}.question{text-align:center;font-size:clamp(21px,3vw,29px);font-weight:900;color:var(--navy);padding:14px 6px}
+details{border:1px solid #eadca3;border-left:5px solid var(--gold);background:var(--gold2);border-radius:14px;margin:10px 0;overflow:hidden}summary{cursor:pointer;font-weight:850;color:#765000;padding:13px 15px;list-style:none}summary::-webkit-details-marker{display:none}details div{padding:0 16px 15px}.hintnum{font-size:12px;font-weight:900;color:var(--gold);text-transform:uppercase;letter-spacing:.08em}.note{color:var(--muted);font-size:14px}.mini{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px}.mini div{padding:12px;border-radius:12px;background:#fff;border:1px solid #d7e2e6}.rule-list{margin:7px 0;padding-left:21px}.rule-list li{margin:6px 0}
+.table{width:100%;border-collapse:collapse;margin:12px 0}.table th,.table td{padding:9px;text-align:center;border-bottom:1px solid var(--line)}
+footer{text-align:center;color:var(--muted);padding:25px}
+@media(max-width:600px){main{padding:14px}.card{padding:17px}.math{font-size:24px}}
+@media print{nav,.parts{display:none}.page,.part{display:block}.card{box-shadow:none;break-inside:avoid}details{display:block}details div{display:block!important}}
+
+#accessGate{
+  position:fixed; inset:0; z-index:9999;
+  display:flex; align-items:center; justify-content:center;
+  padding:20px;
+  background:linear-gradient(135deg,#17384b,#315a74);
+}
+.loginbox{
+  width:min(430px,100%); background:white; border-radius:22px;
+  padding:30px; box-shadow:0 24px 70px #0004; text-align:center;
+}
+.loginbox h2{margin:0 0 8px;color:#17384b}
+.loginbox p{color:#667781}
+.loginbox input{
+  width:100%; padding:13px 14px; border:1px solid #cbd8de;
+  border-radius:11px; font:inherit; margin:8px 0 10px;
+}
+.loginbox button{
+  width:100%; border:0; border-radius:11px; padding:13px;
+  background:#315a74; color:white; font-weight:850; cursor:pointer;
+}
+#errorClave{min-height:22px;margin:10px 0 0;color:#8f3f3f;font-weight:700;font-size:14px}
+</style>
+</head>
+<body>
+
+<div id="accessGate">
+  <div class="loginbox">
+    <h2>Recurso para el profesorado</h2>
+    <p>Introduce la contraseña para acceder a los retos, reglas y pistas.</p>
+    <form id="accessForm">
+      <input id="claveAcceso" type="password" autocomplete="off"
+             placeholder="Contraseña" aria-label="Contraseña">
+      <button type="submit">Entrar</button>
+    </form>
+    <div id="errorClave"></div>
+  </div>
+</div>
+
+<header><div class="wrap"><h1>Tres números, muchas posibilidades</h1><p>Recurso docente · Retos, reglas y pistas graduadas</p></div></header>
+<nav><div class="navin"><button class="mainbtn active" data-page="1">Ejercicio 1</button><button class="mainbtn" data-page="2">Ejercicio 2</button></div></nav>
+<main>
+
+<section id="page1" class="page active">
+<div class="card intro"><h2>Ejercicio 1 · Tres números, muchas posibilidades</h2><div class="math">2 &nbsp;&nbsp; 3 &nbsp;&nbsp; 10</div><div class="math">+ &nbsp; − &nbsp; × &nbsp; ÷</div></div>
+<div class="card rules"><h3>Reglas del ejercicio 1</h3><ul class="rule-list">
+<li>Cada tarjeta puede utilizarse <b>como máximo una vez</b> en cada expresión.</li>
+<li><b>No es necesario utilizar siempre las tres tarjetas.</b></li>
+<li>Se pueden utilizar +, −, × y ÷.</li>
+<li>Las divisiones deben ser <b>exactas</b>.</li>
+<li>Los resultados intermedios y el resultado final deben ser <b>números naturales positivos</b>.</li>
+<li>Los <b>paréntesis pueden utilizarse libremente</b> cuando sean necesarios.</li>
+</ul></div>
+
+<div class="parts">
+<button class="partbtn active" data-prefix="e1" data-part="a">a · Hasta dónde</button>
+<button class="partbtn" data-prefix="e1" data-part="b">b · Distintos caminos</button>
+<button class="partbtn" data-prefix="e1" data-part="c">c · ¿Están todas?</button>
+</div>
+
+<div id="e1a" class="part exercise-part active">
+<div class="card reto"><span class="label">RETO</span><h3>a) ¿Hasta dónde podéis llegar?</h3><p>Intentad conseguir los números naturales empezando por el 1:</p><div class="math">1, 2, 3, 4, 5, …</div><p>Para cada número escribid una expresión que muestre cómo lo habéis conseguido.</p><div class="question">¿Hasta qué número podéis llegar sin saltaros ninguno?</div></div>
+<details><summary>💡 Pista 1</summary><div>Empezad por lo que podéis conseguir utilizando una o dos tarjetas.</div></details>
+<details><summary>💡 Pista 2</summary><div>Si os falta un número, pensad si podéis partir de 10 y acercaros a él.</div></details>
+<details><summary>💡 Pista 3</summary><div>Probad a combinar primero dos tarjetas y utilizar después la tercera.</div></details>
+<details><summary>💡 Pista 4</summary><div>¿Podría ayudaros cambiar la agrupación utilizando paréntesis?</div></details>
+</div>
+
+<div id="e1b" class="part exercise-part">
+<div class="card reto"><span class="label">RETO</span><h3>b) Distintos caminos para llegar al mismo número</h3><p>Algunos números pueden obtenerse de diferentes maneras. Por ejemplo:</p><div class="math">5 = 2 + 3 &nbsp;&nbsp; y &nbsp;&nbsp; 5 = 10 ÷ 2</div><p>Buscad otros números que puedan conseguirse de varias formas.</p><div class="question">¿Cuál puede obtenerse de más formas diferentes?</div><p>Intentad organizar vuestra búsqueda para no repetir posibilidades.</p></div>
+<div class="card rules"><h3>Regla para contar formas diferentes</h3><p>Cambiar únicamente el <b>orden de los números o de los bloques</b> no genera una nueva forma.</p><div class="math">2 + 3 &nbsp;&nbsp; y &nbsp;&nbsp; 3 + 2</div><p style="text-align:center"><b>cuentan como una sola forma.</b></p><p>Cambiar las <b>operaciones</b> o la <b>estructura de los paréntesis</b> sí puede generar una forma diferente.</p></div>
+<details><summary>💡 Pista 1 · ¿Es realmente otra forma?</summary><div>Fijaos en <b>5 = 2 + 3</b> y <b>5 = 3 + 2</b>. ¿Las contaríais como dos opciones? <b>No:</b> solo ha cambiado el orden.</div></details>
+<details><summary>💡 Pista 2 · Organizad la búsqueda</summary><div>Podéis construir una tabla con tres columnas: <b>Número · N.º de formas · Formas encontradas</b>.</div></details>
+<details><summary>💡 Pista 3</summary><div>¿Habéis probado con una, dos y tres tarjetas?</div></details>
+<details><summary>💡 Pista 4</summary><div>¿Solo habéis cambiado el orden de las tarjetas? ¿Qué ocurre si utilizáis otras operaciones o cambiáis los paréntesis?</div></details>
+</div>
+
+<div id="e1c" class="part exercise-part">
+<div class="card reto"><span class="label">RETO</span><h3>c) ¿Cómo sabemos que están todas?</h3><p>Elegid uno de los números que habéis conseguido de varias maneras y organizad todas las expresiones encontradas.</p><div class="question">¿Cómo podéis estar seguros de que no os falta ninguna?</div><p>Preparad una explicación que pueda convencer a otra pareja de que vuestra búsqueda está completa.</p></div>
+<details><summary>💡 Pista 1</summary><div>¿Cómo podríais convencer a otra pareja de que no falta ninguna?</div></details>
+<details><summary>💡 Pista 2</summary><div>¿Podéis separar las expresiones en grupos?</div></details>
+<details><summary>💡 Pista 3</summary><div>¿Qué casos habéis comprobado?</div></details>
+<details><summary>💡 Pista 4</summary><div>¿Qué casos habéis descartado y por qué?</div></details>
+<details><summary>💡 Pista 5 · Si necesitan más ayuda</summary><div>Probad a organizar primero todas las posibilidades con <b>dos tarjetas</b> y después las posibilidades con <b>tres tarjetas</b>.</div></details>
+</div>
+</section>
+
+<section id="page2" class="page">
+<div class="card intro"><h2>Ejercicio 2 · ¿Cuántas posibilidades hay?</h2><p>Ahora cambia la pregunta: en lugar de construir las expresiones una a una, intentaremos averiguar <b>cuántas posibilidades existen</b>.</p></div>
+<div class="card rules"><h3>Reglas del ejercicio 2</h3><div class="mini"><div><b>Posibilidades</b><br>Todas las expresiones que podemos construir siguiendo las condiciones de cada apartado.</div><div><b>Expresiones válidas</b><br>Los cálculos producen naturales positivos y las divisiones son exactas.</div></div><p><b>En los primeros apartados no utilizaremos paréntesis.</b></p></div>
+
+<div class="parts">
+<button class="partbtn active" data-prefix="e2" data-part="a">a</button><button class="partbtn" data-prefix="e2" data-part="b">b</button><button class="partbtn" data-prefix="e2" data-part="c">c</button><button class="partbtn" data-prefix="e2" data-part="d">d</button><button class="partbtn" data-prefix="e2" data-part="e">e</button><button class="partbtn" data-prefix="e2" data-part="f">f</button><button class="partbtn" data-prefix="e2" data-part="g">g</button>
+</div>
+
+<div id="e2a" class="part exercise-part active">
+<div class="card reto"><span class="label">RETO</span><h3>a) Empezamos con dos números</h3><div class="math">2 □ 3</div><p>En el hueco podéis colocar una de las cuatro operaciones:</p><div class="math">+ &nbsp; − &nbsp; × &nbsp; ÷</div><div class="question">¿Cuántas expresiones diferentes podéis construir?</div><p>Ahora podéis elegir <b>dos de las tres tarjetas</b> y colocarlas como queráis.</p><div class="math">2 &nbsp;&nbsp; 3 &nbsp;&nbsp; 10</div><div class="question">¿Qué ocurre ahora? ¿Cambia el número de posibilidades?</div></div>
+<details><summary>💡 Pista 1</summary><div>Con 2 y 3 colocados en ese orden, fijaos solo en el hueco: ¿cuántas elecciones diferentes podéis hacer?</div></details>
+<details><summary>💡 Pista 2</summary><div>Al poder elegir dos tarjetas, pensad primero cuántas <b>parejas ordenadas</b> podéis formar.</div></details>
+<details><summary>💡 Pista 3</summary><div>Para cada pareja que habéis formado, ¿cuántas operaciones podéis colocar en el hueco?</div></details>
+</div>
+
+<div id="e2b" class="part exercise-part">
+<div class="card reto"><span class="label">RETO</span><h3>b) Añadimos un tercer número</h3><p>Ahora colocamos las tres tarjetas en un orden fijo:</p><div class="math">2 □ 3 □ 10</div><p>En cada hueco podemos elegir cualquiera de las cuatro operaciones.</p><div class="question">¿Cuántas formas diferentes hay de elegir las operaciones?</div><p>Intentad averiguarlo sin necesidad de escribir todas las posibilidades.</p></div>
+<details><summary>💡 Pista 1</summary><div>¿Cuántas opciones hay para el primer hueco?</div></details>
+<details><summary>💡 Pista 2</summary><div>Por cada elección del primer hueco, ¿cuántas opciones siguen existiendo para el segundo?</div></details>
+<details><summary>💡 Pista 3</summary><div>Intentad expresar el recuento como un producto, sin escribir una por una todas las expresiones.</div></details>
+</div>
+
+<div id="e2c" class="part exercise-part">
+<div class="card reto"><span class="label">RETO</span><h3>c) Ahora podemos cambiar el orden</h3><p>Seguimos utilizando las tarjetas 2, 3 y 10, pero ahora podemos colocarlas en cualquier orden.</p><div class="question">¿Cuántos órdenes diferentes podemos formar? ¿Cuántas posibilidades tendremos en total?</div></div>
+<details><summary>💡 Pista 1</summary><div>Antes de pensar en las operaciones, escribid todos los órdenes posibles de 2, 3 y 10.</div></details>
+<details><summary>💡 Pista 2</summary><div>Para cada uno de esos órdenes, ¿cuántas elecciones de operaciones teníais en el apartado b)?</div></details>
+<details><summary>💡 Pista 3</summary><div>Hay dos decisiones: <b>orden de las tarjetas</b> y <b>elección de las operaciones</b>. ¿Cómo podéis combinarlas?</div></details>
+</div>
+
+<div id="e2d" class="part exercise-part">
+<div class="card reto"><span class="label">RETO</span><h3>d) Sin repetir operaciones</h3><p>Volvemos a mantener el orden:</p><div class="math">2 □ 3 □ 10</div><p>pero ahora una operación no puede utilizarse dos veces.</p><div class="question">¿Cuántas posibilidades quedan?</div><p>Comparad el resultado con el apartado b).</p></div>
+<details><summary>💡 Pista 1</summary><div>Para el primer hueco seguís teniendo las cuatro operaciones. Después de elegir una, ¿cuántas quedan para el segundo?</div></details>
+<details><summary>💡 Pista 2</summary><div>Comparad vuestro recuento con el del apartado b). ¿Qué elecciones han desaparecido?</div></details>
+</div>
+
+<div id="e2e" class="part exercise-part">
+<div class="card reto"><span class="label">RETO</span><h3>e) Sin repetir y cambiando el orden</h3><p>Mantenemos la condición anterior: no podemos repetir operaciones. Ahora, además, podemos cambiar el orden de las tres tarjetas.</p><div class="question">¿Cuántas posibilidades tenemos en total?</div></div>
+<details><summary>💡 Pista 1</summary><div>¿Cuántos órdenes posibles de las tarjetas encontrasteis en el apartado c)?</div></details>
+<details><summary>💡 Pista 2</summary><div>Para cada orden, ¿cuántas maneras de elegir dos operaciones diferentes encontrasteis en el apartado d)?</div></details>
+<details><summary>💡 Pista 3</summary><div>Combinad ambas decisiones sin enumerar todos los casos.</div></details>
+</div>
+
+<div id="e2f" class="part exercise-part">
+<div class="card reto"><span class="label">RETO</span><h3>f) ¿Y los paréntesis?</h3><p>Hasta ahora hemos utilizado los números y las operaciones, pero no hemos tenido en cuenta los paréntesis. Ahora podéis utilizar las tres tarjetas en el orden que queráis, elegir cualquiera de las cuatro operaciones y colocar paréntesis.</p><div class="question">¿Cuántas posibilidades tenemos ahora?<br>¿Cómo podemos estar seguros de que las hemos encontrado todas?</div><p>Comparad vuestro resultado con el apartado c).</p><div class="question">¿Qué efecto ha tenido añadir los paréntesis?</div><p>Investigad también:</p><div class="question">¿Podemos obtener resultados diferentes sin cambiar los números, su orden ni las operaciones?</div><p>Buscad algún caso en el que cambiar los paréntesis <b>no cambie el resultado</b>.</p><div class="question">¿Pueden los paréntesis hacer válida una expresión que antes no lo era?</div></div>
+<details><summary>💡 Pista 1</summary><div>Partid de lo que ya sabéis del apartado c). No hace falta volver a empezar desde cero.</div></details>
+<details><summary>💡 Pista 2</summary><div>Elegid una expresión concreta con tres números. ¿De cuántas maneras podéis decidir qué cálculo se realiza primero usando paréntesis?</div></details>
+<details><summary>💡 Pista 3</summary><div>Probad las distintas agrupaciones manteniendo exactamente los mismos números, el mismo orden y las mismas operaciones.</div></details>
+<details><summary>💡 Pista 4</summary><div>Cuando sepáis cuántas agrupaciones tiene cada caso del apartado c), pensad cómo afecta eso al número total de posibilidades.</div></details>
+</div>
+
+<div id="e2g" class="part exercise-part">
+<div class="card reto"><span class="label">RETO</span><h3>g) Añadimos un cuarto número</h3><p>Imaginad ahora que tenemos cuatro tarjetas:</p><div class="math">□ ◇ □ ◇ □ ◇ □</div><p>Mantenemos el orden fijo y en cada hueco podemos elegir cualquiera de las cuatro operaciones.</p><div class="question">¿Cuántas posibilidades habrá ahora?</div>
+<table class="table"><tr><th>Números</th><th>Huecos</th><th>Posibilidades</th></tr><tr><td>2</td><td>1</td><td>?</td></tr><tr><td>3</td><td>2</td><td>?</td></tr><tr><td>4</td><td>3</td><td>?</td></tr><tr><td>5</td><td>4</td><td>?</td></tr><tr><td>6</td><td>5</td><td>?</td></tr></table><div class="question">¿Qué patrón observáis? ¿Podríais predecir qué ocurrirá con más números?</div></div>
+<details><summary>💡 Pista 1</summary><div>Fijaos en la relación entre el número de tarjetas y el número de huecos.</div></details>
+<details><summary>💡 Pista 2</summary><div>Cada nuevo número añade un nuevo hueco. ¿Cuántas elecciones hay en cada hueco?</div></details>
+<details><summary>💡 Pista 3</summary><div>Escribid los primeros casos como productos: un 4, después dos factores 4, después tres…</div></details>
+<details><summary>💡 Pista 4</summary><div>¿Existe una manera más corta de escribir un producto en el que el 4 se repite muchas veces?</div></details>
+</div>
+</section>
+</main>
+<footer>Programa de Cooperación Territorial · Competencia Matemática</footer>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const accessForm = document.getElementById('accessForm');
+  const accessGate = document.getElementById('accessGate');
+  const claveAcceso = document.getElementById('claveAcceso');
+  const errorClave = document.getElementById('errorClave');
+
+  accessForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    if (claveAcceso.value === 'puestoprofe') {
+      accessGate.style.display = 'none';
+      errorClave.textContent = '';
+      claveAcceso.value = '';
+    } else {
+      errorClave.textContent = 'Contraseña incorrecta.';
+      claveAcceso.select();
+    }
+  });
+
+  const mainButtons = document.querySelectorAll('.mainbtn');
+  const pages = document.querySelectorAll('.page');
+
+  mainButtons.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      const n = btn.dataset.page;
+      pages.forEach(p => p.classList.remove('active'));
+      mainButtons.forEach(b => b.classList.remove('active'));
+      document.getElementById('page' + n).classList.add('active');
+      btn.classList.add('active');
+      window.scrollTo({top: 0, behavior: 'smooth'});
+    });
+  });
+
+  document.querySelectorAll('.partbtn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      const prefix = btn.dataset.prefix;
+      const suffix = btn.dataset.part;
+      const target = document.getElementById(prefix + suffix);
+      if (!target) return;
+
+      const page = btn.closest('.page');
+      page.querySelectorAll('.exercise-part').forEach(p => p.classList.remove('active'));
+      page.querySelectorAll('.partbtn').forEach(b => b.classList.remove('active'));
+
+      target.classList.add('active');
+      btn.classList.add('active');
+    });
+  });
+});
+</script>
+</body></html>
