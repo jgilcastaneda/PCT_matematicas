@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Engaña al detective y Hundir la flota de funciones y rectas</title>
+<style>
+:root{
+  --azul:#315A74;--azuloscuro:#244456;--azulclaro:#EAF1F5;
+  --gris:#4B5563;--grisclaro:#F4F5F6;--verde:#2F6B57;
+  --verdeclaro:#EDF5F1;--amarillo:#FFF5CC;--rojo:#8F3F3F;
+  --rojoclaro:#F8EEEE;--borde:#d7e0e5;
+}
+*{box-sizing:border-box}
+body{margin:0;background:#f7f9fa;color:#26343d;font-family:Arial,Helvetica,sans-serif;line-height:1.45}
+header{background:white;border-bottom:4px solid var(--azul);padding:18px 20px;text-align:center}
+header h1{margin:0;color:var(--azul);font-size:clamp(25px,4vw,40px)}
+header p{margin:5px 0 0;color:var(--gris)}
+nav{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;padding:12px;background:#fff;border-bottom:1px solid var(--borde);position:sticky;top:0;z-index:10}
+button,select,input{font:inherit}
+button{cursor:pointer}
+.navbtn,.btn{border:0;border-radius:9px;padding:10px 15px;font-weight:700}
+.navbtn{background:var(--azulclaro);color:var(--azuloscuro)}
+.navbtn.active,.btn{background:var(--azul);color:white}
+.btn.green{background:var(--verde)} .btn.red{background:var(--rojo)}
+.btn.light{background:var(--azulclaro);color:var(--azuloscuro)}
+main{max-width:1100px;margin:20px auto;padding:0 16px 50px}
+.game{display:none}.game.active{display:block}
+.intro,.panel,.section{background:#fff;border:1px solid var(--borde);border-radius:14px;margin:14px 0;padding:18px}
+.intro h2{color:var(--azul);font-size:30px;margin:0 0 6px}
+.section h3{margin:0 0 12px;color:var(--azuloscuro);font-size:23px;border-bottom:2px solid var(--azulclaro);padding-bottom:7px}
+.mission{border:2px solid var(--verde);border-radius:12px;padding:13px;text-align:center;color:var(--verde);font-weight:800;font-size:20px;margin:12px 0}
+.rules{background:var(--azulclaro);border-left:5px solid var(--azul);padding:12px 15px;border-radius:8px;margin:12px 0}
+.rules h4,.questions h4{margin:0 0 7px}
+.rules ol{margin:5px 0;padding-left:22px}.rules li{margin:5px 0}
+.questions{background:var(--grisclaro);border-left:5px solid #9aa6ad;padding:12px 15px;border-radius:8px;margin:12px 0}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:7px}
+.q{background:white;border:1px solid var(--borde);padding:9px;border-radius:7px}
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:end;margin:12px 0}
+label{font-weight:700;color:var(--azuloscuro)}
+input,select{display:block;margin-top:4px;border:1px solid #aebcc4;border-radius:8px;padding:9px;min-height:42px;background:white}
+.status{padding:11px 13px;border-radius:9px;background:var(--azulclaro);margin:10px 0;font-weight:700}
+.status.good{background:var(--verdeclaro);color:#245c48}.status.bad{background:var(--rojoclaro);color:#793636}
+table{border-collapse:collapse;width:100%;margin:10px 0}
+th,td{border-bottom:1px solid var(--borde);padding:8px;text-align:center}
+th{color:var(--azuloscuro)}
+.funcs{line-height:2}
+.pill{display:inline-block;background:var(--azulclaro);border:1px solid #cbd9e0;border-radius:999px;padding:3px 9px;margin:2px;font-weight:700}
+.hidden-help{font-weight:700;color:var(--gris)}
+.gridwrap{overflow:auto}
+.grid{display:grid;grid-template-columns:repeat(7,52px);grid-template-rows:repeat(7,52px);gap:2px;width:max-content;margin:10px auto}
+.cell{width:52px;height:52px;border:1px solid #b8c4ca;border-radius:5px;background:white;color:#52616a;font-size:11px;padding:0}
+.cell.water{background:#dfeaf0}.cell.hit{background:#f4d2d2;color:#762f2f;font-weight:bold}.cell.sunk{background:#cee6da;color:#245b47;font-weight:bold}
+.ships{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.ship{background:var(--grisclaro);padding:10px;border-radius:8px;text-align:center}.ship.done{background:var(--verdeclaro)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.small{font-size:14px;color:var(--gris)}
+.score{font-weight:800;color:var(--azuloscuro)}
+@media(max-width:700px){.two{grid-template-columns:1fr}.ships{grid-template-columns:1fr}.grid{grid-template-columns:repeat(7,40px);grid-template-rows:repeat(7,40px)}.cell{width:40px;height:40px;font-size:9px}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Engaña al detective y Hundir la flota de funciones y rectas</h1>
+  <p>2.º ESO · Actividades para proyectar y jugar contra la máquina</p>
+</header>
+<nav>
+  <button class="navbtn active" data-game="detective">1. Engaña al detective</button>
+  <button class="navbtn" data-game="flota">2. Hundir la flota</button>
+</nav>
+<main>
+
+<section id="detective" class="game active">
+  <div class="intro">
+    <h2>Engaña al detective</h2>
+    <div class="mission">Una máquina sigue una regla secreta. ¿Puedes descubrirla con pocas preguntas?</div>
+  </div>
+
+  <div class="section">
+    <h3>A. Contra la máquina</h3>
+    <div class="rules">
+      <h4>Reglas</h4>
+      <ol>
+        <li>La máquina elige una regla secreta y no la modifica.</li>
+        <li>La clase propone valores de <strong>x</strong>.</li>
+        <li>La máquina devuelve el valor correspondiente de <strong>y</strong>.</li>
+        <li>Podéis proponer una regla cuando creáis haberla descubierto.</li>
+      </ol>
+    </div>
+    <div class="questions">
+      <h4>Preguntas para pensar</h4>
+      <div class="qgrid">
+        <div class="q">¿Qué regla podría estar utilizando la máquina?</div>
+        <div class="q">¿Qué valor elegirías ahora para comprobar tu idea?</div>
+        <div class="q">¿Todas las preguntas proporcionan la misma información?</div>
+        <div class="q">¿Por qué puede ser útil preguntar por x = 0?</div>
+      </div>
+    </div>
+    <div class="panel">
+      <h4>Partida colectiva</h4>
+      <div class="controls">
+        <label>Nivel
+          <select id="dLevelA"><option value="easy">Reglas sencillas</option><option value="medium">Más posibilidades</option></select>
+        </label>
+        <button class="btn" id="dNewA">Nueva regla</button>
+      </div>
+      <div id="dPoolA" class="funcs"></div>
+      <div class="controls">
+        <label>Pregunta por x
+          <input id="dXA" type="number" step="1" value="0">
+        </label>
+        <button class="btn green" id="dAskA">Preguntar a la máquina</button>
+      </div>
+      <table><thead><tr><th>Pregunta</th><th>x</th><th>y</th></tr></thead><tbody id="dHistA"></tbody></table>
+      <div class="controls">
+        <label>Creemos que la regla es
+          <select id="dGuessA"></select>
+        </label>
+        <button class="btn" id="dCheckA">Comprobar</button>
+      </div>
+      <div id="dStatusA" class="status">La máquina está preparada.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>B. Ahora jugáis vosotros</h3>
+    <div class="mission">Uno crea la función secreta y el otro intenta descubrirla.</div>
+    <div class="rules">
+      <h4>Elegid una función</h4>
+      <p>El Guardián elige una de estas funciones, la escribe antes de empezar y no puede cambiarla. 
+      El Detective dispone de un máximo de <strong>4 preguntas</strong> del tipo «¿qué valor toma y si x = ...?».</p>
+    </div>
+    <div class="funcs">
+      <span class="pill">y = x + 2</span>
+      <span class="pill">y = -x + 1</span>
+      <span class="pill">y = 2x</span>
+      <span class="pill">y = 2x + 1</span>
+      <span class="pill">y = 2x - 2</span>
+      <span class="pill">y = -2x + 2</span>
+      <span class="pill">y = 3x</span>
+      <span class="pill">y = 3x - 1</span>
+      <span class="pill">y = -3x + 2</span>
+      <span class="pill">y = 4x - 1</span>
+    </div>
+    <div class="questions">
+      <h4>Preguntas para pensar</h4>
+      <div class="qgrid">
+        <div class="q">¿Qué valor de x te permitiría descartar más funciones?</div>
+        <div class="q">¿Por qué puede ser útil preguntar por x = 0?</div>
+        <div class="q">¿Qué segunda pregunta elegirías después de conocer la primera respuesta?</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>C. Sin lista de funciones</h3>
+    <div class="mission">Ahora podéis crear cualquier función de la forma <strong>y = ax + b</strong>.</div>
+    <div class="rules">
+      <h4>Reto final</h4>
+      <ol>
+        <li>El Guardián inventa una función <strong>y = ax + b</strong> y la escribe antes de comenzar.</li>
+        <li>Puede elegir libremente los valores enteros de <strong>a</strong> y <strong>b</strong>.</li>
+        <li>El Detective tiene un máximo de <strong>4 preguntas</strong> para descubrirla.</li>
+        <li>Después intercambiáis los papeles.</li>
+      </ol>
+    </div>
+    <div class="questions">
+      <h4>Antes de empezar</h4>
+      <div class="qgrid">
+        <div class="q">¿Cómo crearías una función fácil de descubrir?</div>
+        <div class="q">¿Cómo crearías una función que engañe al detective?</div>
+        <div class="q">¿Qué preguntas serían especialmente útiles si no conoces ninguna posibilidad?</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="flota" class="game">
+  <div class="intro">
+    <h2>Hundir la flota de funciones y rectas</h2>
+    <div class="mission">2 TOCADOS + FUNCIÓN CORRECTA = HUNDIDO</div>
+    <div class="status"><strong>Importante:</strong> en el apartado A los puntos de cada barco son consecutivos. En el apartado B no tienen que serlo: esto permite trabajar con reglas como y = 2x + b o y = 3x + b.</div>
+  </div>
+
+  <div class="rules">
+    <h4>Reglas generales</h4>
+    <ol>
+      <li>La máquina esconde <strong>3 barcos</strong>.</li>
+      <li>Los barcos <strong>no pueden compartir ninguna casilla</strong>: los seis puntos ocupados son distintos.</li>
+      <li><strong>Cada barco tiene siempre exactamente 2 puntos distintos.</strong> Nunca se genera un barco de un solo punto.</li>
+      <li><strong>A:</strong> los dos puntos de cada barco deben ser consecutivos en la cuadrícula.</li>
+      <li><strong>B:</strong> los dos puntos no tienen que ser consecutivos; basta con que pertenezcan a la misma regla. Siempre hay 6 puntos distintos en total.</li>
+      <li>Los dos puntos de cada barco deben cumplir la <strong>misma función o regla secreta</strong>. En A, además, deben ser consecutivos; en B no es necesario.</li>
+      <li>Disparas indicando una coordenada (x,y).</li>
+      <li>La máquina responde <strong>AGUA</strong> o <strong>TOCADO</strong>.</li>
+      <li>Encontrar los dos puntos no basta: para hundir el barco debes identificar también su función.</li>
+      <li>La partida termina cuando hundes los tres barcos.</li>
+    </ol>
+  </div>
+
+  <div class="section">
+    <h3>A. Flota de entrenamiento · 15 reglas</h3>
+    <p class="small"><strong>En A los barcos sí son consecutivos.</strong> Cada barco ocupa exactamente dos casillas que se tocan —horizontal, vertical o diagonal—. Se juega directamente con <strong>15 reglas</strong>.</p>
+    <div class="questions">
+      <h4>Preguntas para pensar</h4>
+      <div class="qgrid">
+        <div class="q">¿Qué reglas podrían pasar por un TOCADO?</div>
+        <div class="q">¿Qué reglas puedes descartar?</div>
+        <div class="q">¿Dónde te interesaría disparar ahora?</div>
+      </div>
+    </div>
+    <div class="panel fleetGame" data-mode="A" data-count="15">
+      <div class="controls"><button class="btn newFleet">Nueva flota</button></div>
+      <div class="funcs fleetPool"></div>
+      <div class="gridwrap"><div class="grid fleetGrid"></div></div>
+      <div class="status fleetStatus">Pulsa «Nueva flota».</div>
+      <div class="ships fleetShips"></div>
+      <div class="controls">
+        <label>Regla que crees que representa el barco<select class="fleetGuess"></select></label>
+        <button class="btn green fleetCheck">Intentar hundir</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>B. Flota ampliada · 30 reglas</h3>
+    <p class="small"><strong>En B desaparece la condición de consecutividad.</strong> La máquina esconde 3 barcos formados por 2 puntos cada uno: <strong>6 puntos distintos en total</strong>. Los dos puntos de cada barco cumplen la misma regla. Se juega directamente con <strong>30 reglas</strong>, incluyendo funciones del tipo y = ax + b con a = ±2 y ±3.</p>
+    <div class="rules">
+      <h4>Regla de esta fase</h4>
+      <p>El juego es el mismo, pero ahora aumenta el número de funciones posibles.</p>
+      <div class="mission">A: 15 reglas · B: 30 reglas</div>
+    </div>
+    <div class="questions">
+      <h4>Preguntas para pensar</h4>
+      <div class="qgrid">
+        <div class="q">¿Qué puedes descartar sin comprobar regla por regla?</div>
+        <div class="q">¿Qué información nueva aporta un segundo TOCADO?</div>
+        <div class="q">¿Qué disparo puede darte más información?</div>
+      </div>
+    </div>
+    <div class="panel fleetGame" data-mode="B" data-count="30">
+      <div class="controls">
+        <button class="btn newFleet">Nueva flota</button>
+      </div>
+      <div class="funcs fleetPool"></div>
+      <div class="gridwrap"><div class="grid fleetGrid"></div></div>
+      <div class="status fleetStatus">Pulsa «Nueva flota».</div>
+      <div class="ships fleetShips"></div>
+      <div class="controls">
+        <label>Regla que crees que representa el barco<select class="fleetGuess"></select></label>
+        <button class="btn green fleetCheck">Intentar hundir</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>C. Ahora crea tu propia flota</h3>
+    <div class="mission">Crea tus funciones y juega con tu compañero.</div>
+    <div class="rules">
+      <p>Ya conocéis la dinámica. Cada jugador prepara en secreto <strong>3 barcos</strong>, con 
+      <strong>2 puntos por barco</strong> y sin repetir puntos. Elegid vosotros las funciones o reglas que queráis utilizar, 
+      colocad los seis puntos en vuestro tablero y comenzad la partida.</p>
+    </div>
+    <div class="questions">
+      <h4>Desafío</h4>
+      <div class="qgrid">
+        <div class="q">¿Qué funciones elegirías para que tu flota sea difícil de descubrir?</div>
+        <div class="q">¿Cómo comprobarás que los dos puntos de cada barco pertenecen realmente a tu función?</div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<script>
+const F=[
+/* A: 15 reglas compatibles con barcos de dos casillas consecutivas */
+{t:"y = x",kind:"y",a:1,b:0},
+{t:"y = x + 1",kind:"y",a:1,b:1},
+{t:"y = x - 1",kind:"y",a:1,b:-1},
+{t:"y = x + 2",kind:"y",a:1,b:2},
+{t:"y = -x",kind:"y",a:-1,b:0},
+{t:"y = -x + 1",kind:"y",a:-1,b:1},
+{t:"y = -x - 1",kind:"y",a:-1,b:-1},
+{t:"y = -x + 2",kind:"y",a:-1,b:2},
+{t:"y = 0",kind:"y",a:0,b:0},
+{t:"y = 2",kind:"y",a:0,b:2},
+{t:"y = -2",kind:"y",a:0,b:-2},
+{t:"x = 0",kind:"x",c:0},
+{t:"x = 2",kind:"x",c:2},
+{t:"x = -2",kind:"x",c:-2},
+{t:"x = 3",kind:"x",c:3},
+
+/* B: hasta 30 reglas; se añaden pendientes ±2 y ±3 */
+{t:"y = 2x",kind:"y",a:2,b:0},
+{t:"y = 2x + 1",kind:"y",a:2,b:1},
+{t:"y = 2x - 1",kind:"y",a:2,b:-1},
+{t:"y = 2x + 2",kind:"y",a:2,b:2},
+{t:"y = 2x - 2",kind:"y",a:2,b:-2},
+{t:"y = -2x",kind:"y",a:-2,b:0},
+{t:"y = -2x + 1",kind:"y",a:-2,b:1},
+{t:"y = -2x - 1",kind:"y",a:-2,b:-1},
+{t:"y = -2x + 2",kind:"y",a:-2,b:2},
+{t:"y = 3x",kind:"y",a:3,b:0},
+{t:"y = 3x + 1",kind:"y",a:3,b:1},
+{t:"y = 3x - 1",kind:"y",a:3,b:-1},
+{t:"y = -3x",kind:"y",a:-3,b:0},
+{t:"y = -3x + 1",kind:"y",a:-3,b:1},
+{t:"y = -3x - 1",kind:"y",a:-3,b:-1}
+];
+const val=(f,x)=>f.a*x+f.b, D=F.filter(f=>f.kind==="y" && Math.abs(f.a)<=1), shuffle=a=>[...a].sort(()=>Math.random()-.5), $=s=>document.querySelector(s);
+document.querySelectorAll(".navbtn").forEach(b=>b.addEventListener("click",()=>{
+ document.querySelectorAll(".navbtn").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".game").forEach(x=>x.classList.remove("active"));
+ b.classList.add("active");$("#"+b.dataset.game).classList.add("active");
+}));
+
+function detective(prefix,poolGetter,max=Infinity,free=false){
+ let secret=null,n=0,pool=[];
+ const newBtn=$("#"+prefix.replace("Status","New")), status=$("#"+prefix), hist=$("#"+prefix.replace("Status","Hist"));
+ const ask=$("#"+prefix.replace("Status","Ask")), xin=$("#"+prefix.replace("Status","X"));
+ const check=$("#"+prefix.replace("Status","Check"));
+ function start(){
+   pool=poolGetter();secret=pool[Math.floor(Math.random()*pool.length)];n=0;hist.innerHTML="";
+   const poolEl=$("#"+prefix.replace("Status","Pool")); if(poolEl) poolEl.innerHTML=pool.map(f=>`<span class="pill">${f.t}</span>`).join("");
+   const guess=$("#"+prefix.replace("Status","Guess")); if(guess) guess.innerHTML=pool.map((f,i)=>`<option value="${i}">${f.t}</option>`).join("");
+   const left=$("#"+prefix.replace("Status","Left"));if(left)left.textContent=max===Infinity?"":`${max} preguntas disponibles`;
+   status.className="status";status.textContent="La máquina ya ha elegido su regla secreta.";
+ }
+ newBtn.addEventListener("click",start);
+ ask.addEventListener("click",()=>{
+   if(!secret)start(); if(n>=max){status.className="status bad";status.textContent="Has utilizado las 4 preguntas.";return;}
+   const x=Number(xin.value);if(!Number.isFinite(x))return;const y=val(secret,x);n++;
+   hist.insertAdjacentHTML("beforeend",`<tr><td>${n}</td><td>${x}</td><td>${y}</td></tr>`);
+   const left=$("#"+prefix.replace("Status","Left"));if(left)left.textContent=`${Math.max(0,max-n)} preguntas disponibles`;
+   status.className="status";status.textContent=`Para x = ${x}, la máquina responde y = ${y}.`;
+ });
+ check.addEventListener("click",()=>{
+   let ok=false,guessText="";
+   if(free){const a=Number($("#dA").value),b=Number($("#dB").value);ok=a===secret.a&&b===secret.b;guessText=`y = ${a}x ${b>=0?"+ "+b:"- "+Math.abs(b)}`;}
+   else{const g=$("#"+prefix.replace("Status","Guess"));const chosen=pool[Number(g.value)];ok=chosen===secret;guessText=chosen?chosen.t:"";}
+   status.className=ok?"status good":"status bad";status.textContent=ok?`¡Correcto! La regla era ${secret.t}.`:`${guessText} no es la regla secreta. Revisa los datos.`;
+ });
+ start();
+}
+detective("dStatusA",()=>$("#dLevelA").value==="easy"?D.slice(0,10):D.slice(0,20));
+$("#dLevelA").addEventListener("change",()=>$("#dNewA").click());
+
+function validPts(f){
+  const pts=[];
+  if(f.kind==="x"){
+    for(let y=-3;y<=3;y++) pts.push({x:f.c,y});
+  }else{
+    for(let x=-3;x<=3;x++){
+      const y=val(f,x);
+      if(Number.isInteger(y)&&y>=-3&&y<=3) pts.push({x,y});
+    }
+  }
+  return pts;
+}
+function consecutivePairs(f){
+  const pts=validPts(f), pairs=[];
+  for(let i=0;i<pts.length;i++) for(let j=i+1;j<pts.length;j++){
+    const dx=Math.abs(pts[i].x-pts[j].x);
+    const dy=Math.abs(pts[i].y-pts[j].y);
+    // A: casillas realmente consecutivas: horizontal, vertical o diagonal.
+    if(dx<=1 && dy<=1 && dx+dy>0) pairs.push([pts[i],pts[j]]);
+  }
+  return pairs;
+}
+
+function anyTwoPoints(f){
+  const pts=validPts(f), pairs=[];
+  // B: dos puntos distintos cualesquiera de la misma regla dentro del tablero.
+  for(let i=0;i<pts.length;i++) for(let j=i+1;j<pts.length;j++){
+    pairs.push([pts[i],pts[j]]);
+  }
+  return pairs;
+}
+function k(x,y){return x+","+y}
+document.querySelectorAll(".fleetGame").forEach(root=>{
+ let pool=[],ships=[],shots=new Map();
+ const poolEl=root.querySelector(".fleetPool"),grid=root.querySelector(".fleetGrid"),status=root.querySelector(".fleetStatus"),shipsEl=root.querySelector(".fleetShips"),guess=root.querySelector(".fleetGuess");
+ const mode=root.dataset.mode||"A";
+ function count(){return mode==="A"?15:30}
+ function pairSource(f){return mode==="A"?consecutivePairs(f):anyTwoPoints(f)}
+ function renderGrid(){
+   grid.innerHTML="";
+   for(let y=3;y>=-3;y--)for(let x=-3;x<=3;x++){let b=document.createElement("button");b.type="button";b.className="cell";b.textContent=`${x},${y}`;
+     let st=shots.get(k(x,y));if(st)b.classList.add(st);b.addEventListener("click",()=>shoot(x,y));grid.appendChild(b)}
+ }
+ function renderShips(){shipsEl.innerHTML=ships.map((s,i)=>`<div class="ship ${s.sunk?"done":""}"><strong>Barco ${i+1}</strong><br>${s.sunk?"HUNDIDO":s.hits.size+" / 2 TOCADOS"}</div>`).join("")}
+ function start(){
+   pool=F.slice(0,Math.min(count(),F.length));
+   ships=[];
+   shots=new Map();
+
+   function validPair(pair){
+     if(!Array.isArray(pair) || pair.length!==2) return false;
+     const [p1,p2]=pair;
+     if(!p1 || !p2) return false;
+     if(p1.x===p2.x && p1.y===p2.y) return false;
+     return [p1,p2].every(p =>
+       Number.isInteger(p.x) && Number.isInteger(p.y) &&
+       p.x>=-3 && p.x<=3 && p.y>=-3 && p.y<=3
+     );
+   }
+
+   // Intentamos construir una flota completa. No se acepta ninguna
+   // configuración hasta tener 3 barcos de 2 puntos distintos cada uno.
+   let built=false;
+   for(let attempt=0; attempt<200 && !built; attempt++){
+     const candidateShips=[];
+     const occupied=new Set();
+     const eligible=shuffle(pool.filter(f =>
+       pairSource(f).some(validPair)
+     ));
+
+     for(const f of eligible){
+       const pairs=shuffle(pairSource(f).filter(validPair));
+       const pair=pairs.find(pair =>
+         pair.every(p=>!occupied.has(k(p.x,p.y)))
+       );
+       if(!pair) continue;
+
+       // Copia defensiva: cada barco conserva exactamente sus dos puntos.
+       const pts=[
+         {x:pair[0].x,y:pair[0].y},
+         {x:pair[1].x,y:pair[1].y}
+       ];
+
+       candidateShips.push({f,pts,hits:new Set(),sunk:false});
+       pts.forEach(p=>occupied.add(k(p.x,p.y)));
+
+       if(candidateShips.length===3) break;
+     }
+
+     const sixDistinct = occupied.size===6;
+     const allHaveTwo = candidateShips.length===3 &&
+       candidateShips.every(ship =>
+         ship.pts.length===2 &&
+         k(ship.pts[0].x,ship.pts[0].y)!==k(ship.pts[1].x,ship.pts[1].y)
+       );
+
+     if(allHaveTwo && sixDistinct){
+       ships=candidateShips;
+       built=true;
+     }
+   }
+
+   if(!built){
+     status.className="status bad";
+     status.textContent="No se ha podido generar una flota válida. Pulsa «Nueva flota».";
+     renderGrid();
+     renderShips();
+     return;
+   }
+
+   if(poolEl)poolEl.innerHTML=pool.map(f=>`<span class="pill">${f.t}</span>`).join("");
+   if(guess)guess.innerHTML=pool.map((f,i)=>`<option value="${i}">${f.t}</option>`).join("");
+   status.className="status";
+   status.textContent = mode==="A"
+     ? "Flota A preparada: 3 barcos, 2 puntos consecutivos por barco y 6 casillas distintas."
+     : "Flota B preparada: 3 barcos, 2 puntos de su regla por barco y 6 puntos distintos; no tienen que ser consecutivos.";
+   renderGrid();
+   renderShips();
+ }
+ function shoot(x,y){
+   const key=k(x,y);if(shots.has(key)){status.className="status bad";status.textContent="Ya habías disparado a esa coordenada.";return}
+   let found=null,idx=-1;ships.forEach(s=>{let i=s.pts.findIndex(p=>p.x===x&&p.y===y);if(i>=0){found=s;idx=i}});
+   if(found){found.hits.add(idx);shots.set(key,"hit");status.className="status good";status.textContent=`TOCADO en (${x}, ${y}).`}
+   else{shots.set(key,"water");status.className="status";status.textContent=`AGUA en (${x}, ${y}).`}renderGrid();renderShips();
+ }
+ function sinkWith(fn){
+   const ready=ships.filter(s=>!s.sunk&&s.hits.size===2);if(!ready.length){status.className="status bad";status.textContent="Primero debes localizar las dos posiciones de un barco.";return}
+   const s=ready.find(s=>s.f.kind===fn.kind && (fn.kind==="x" ? s.f.c===fn.c : (s.f.a===fn.a&&s.f.b===fn.b)));if(!s){status.className="status bad";status.textContent="Esa función no corresponde a un barco con dos TOCADOS.";return}
+   s.sunk=true;s.pts.forEach(p=>shots.set(k(p.x,p.y),"sunk"));renderGrid();renderShips();
+   status.className="status good";status.textContent=ships.every(s=>s.sunk)?"¡FLOTA HUNDIDA! Has identificado los tres barcos.":`¡HUNDIDO! El barco representaba ${s.f.t}.`;
+ }
+ root.querySelector(".newFleet").addEventListener("click",start);
+ const fc=root.querySelector(".fleetCount");if(fc)fc.addEventListener("change",start);
+ const normal=root.querySelector(".fleetCheck");if(normal)normal.addEventListener("click",()=>sinkWith(pool[Number(guess.value)]));
+ const free=root.querySelector(".fleetCheckFree");if(free)free.addEventListener("click",()=>{
+   const type=root.querySelector(".freeType").value;
+   const a=Number(root.querySelector(".freeA").value), b=Number(root.querySelector(".freeB").value);
+   sinkWith(type==="x"?{kind:"x",c:a,t:"x = "+a}:{kind:"y",a:a,b:b,t:"y = "+a+"x "+(b>=0?"+ "+b:"- "+Math.abs(b))});
+ });
+ start();
+});
+</script>
+</body>
+</html>
